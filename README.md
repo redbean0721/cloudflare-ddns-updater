@@ -42,7 +42,14 @@ export CF_API_TOKEN="your_cloudflare_api_token"
 export ZONE_NAME="example.com"
 ```
 
-Or store them in a `.env` file (see below).
+Or store them in a `.env` file. Copy and edit the example:
+
+```
+cp .env.example .env
+vim .env
+```
+
+The script will automatically load `.env` when run.
 
 ---
 
@@ -63,7 +70,7 @@ Content_Rule: "{IPV6}"
 
 # Update SPF TXT record
 Type: TXT
-Name: mail
+Name: @
 Content_Rule: "v=spf1 ip4:{IPV4} ip6:{IPV6} mx ~all"
 ```
 
@@ -74,6 +81,7 @@ Content_Rule: "v=spf1 ip4:{IPV4} ip6:{IPV6} mx ~all"
 ### 4. Run the script
 
 ```bash
+chmod +x ./update_dns.sh
 ./update_dns.sh
 ```
 
@@ -95,12 +103,6 @@ Current IPv6: 2001:db8::1234
 
 ## ⏱️ Automate with Cron
 
-### Make script executable
-
-```bash
-chmod +x ./update_dns.sh
-```
-
 ### Open crontab
 
 ```bash
@@ -109,27 +111,23 @@ crontab -e
 
 ### Example cron job (every 10 minutes)
 
-**Option 1: Inline env variables**
+#### Base usage:
+
+```bash
+*/10 * * * * /path/to/cloudflare-ddns-updater/update_dns.sh
+```
+
+This assumes you have already exported required environment variables (`CF_API_TOKEN`, `ZONE_NAME`, etc.) or set them inside the script.
+
+---
+
+#### Advanced usage with inline variables and logging:
 
 ```bash
 */10 * * * * CF_API_TOKEN=your_token ZONE_NAME=yourdomain.com AUTO_INSTALL_JQ=true /path/to/cloudflare-ddns-updater/update_dns.sh >> /var/log/cloudflare-ddns.log 2>&1
 ```
 
-**Option 2: Use `.env`**
-
-1. Create a `.env` file:
-
-   ```dotenv
-   CF_API_TOKEN=your_token
-   ZONE_NAME=yourdomain.com
-   AUTO_INSTALL_JQ=true
-   ```
-
-2. Add to crontab:
-
-   ```bash
-   */10 * * * * source /path/to/cloudflare-ddns-updater/.env && /path/to/cloudflare-ddns-updater/update_dns.sh >> /var/log/cloudflare-ddns.log 2>&1
-   ```
+This version sets environment variables directly in the cron line and appends output to a log file.
 
 ---
 
