@@ -83,7 +83,13 @@ parse_records() {
 
     CONTENT="${RULE//\{IPV4\}/$IPV4}"
     CONTENT="${CONTENT//\{IPV6\}/$IPV6}"
-    FQDN="$NAME.$ZONE_NAME"
+    
+		# Check if NAME is @ to correctly handle root domain
+		if [[ "$NAME" == "@" ]]; then
+      FQDN="$ZONE_NAME"
+    else
+      FQDN="$NAME.$ZONE_NAME"
+    fi
 
     echo "🔍 Processing $TYPE record for $FQDN..."
 
