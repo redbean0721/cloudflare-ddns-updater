@@ -2,6 +2,9 @@
 
 set -e
 
+# open the script directory
+cd "$(dirname "$0")" || exit 1
+
 # Load .env file if exists
 [ -f .env ] && export $(grep -v '^#' .env | xargs)
 
