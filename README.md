@@ -131,6 +131,25 @@ This version sets environment variables directly in the cron line and appends ou
 
 ---
 
+## 🔄 Updating the Script
+
+#### If you already cloned the repository and want to update only `update_dns.sh`:
+
+```bash
+# Go to your local repository
+cd /path/to/cloudflare-ddns-updater
+
+# Fetch the latest changes from remote
+git fetch origin
+
+# Checkout only the update_dns.sh from the remote main branch
+git checkout origin/main -- update_dns.sh
+```
+
+- ✅ This replaces your local update_dns.sh with the latest version without affecting other files.
+
+---
+
 ## 🛠 Requirements
 
 * `bash` (v4+ recommended)
