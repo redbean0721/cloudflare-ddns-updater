@@ -51,9 +51,31 @@ if ! command -v jq >/dev/null; then
   fi
 fi
 
-# Get Current Public IP Addresses
-IPV4=$(curl -s https://api.ipify.org || curl -s https://ipv4.icanhazip.com)
-IPV6=$(curl -s https://api6.ipify.org || curl -s https://ipv6.icanhazip.com)
+# Get Current Public IP Addresses (only fetch what is needed)
+NEED_IPV4=false
+NEED_IPV6=false
+if [[ -f "$CONF_FILE" ]]; then
+  grep -q "{IPV4}" "$CONF_FILE" && NEED_IPV4=true
+  grep -q "{IPV6}" "$CONF_FILE" && NEED_IPV6=true
+fi
+
+IPV4=""
+IPV6=""
+if [[ "$NEED_IPV4" == "true" ]]; then
+  IPV4=$(curl -s https://api.ipify.org || curl -s https://ipv4.icanhazip.com)
+fi
+if [[ "$NEED_IPV6" == "true" ]]; then
+  IPV6=$(curl -s https://api6.ipify.org || curl -s https://ipv6.icanhazip.com)
+fi
+
+if [[ "$NEED_IPV4" == "true" && -z "$IPV4" ]]; then
+  echo "Unable to obtain IPv4 address."
+  exit 1
+fi
+if [[ "$NEED_IPV6" == "true" && -z "$IPV6" ]]; then
+  echo "Unable to obtain IPv6 address."
+  exit 1
+fi
 
 [[ -z "$IPV4" && -z "$IPV6" ]] && { echo "Unable to obtain IP addresses."; exit 1; }
 echo "Current IPv4: $IPV4"
