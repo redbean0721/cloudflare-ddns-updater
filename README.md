@@ -7,6 +7,7 @@
 ## ✨ Features
 
 * 🔄 Automatically detects your public **IPv4** and **IPv6** addresses
+* 🎯 Fetches only the IP versions referenced in `config.conf`
 * 🔐 Uses **Cloudflare API Token** securely via environment variables
 * ⚙️ Customizable DNS update rules via `config.conf`
 * 📝 Supports `{IPV4}` and `{IPV6}` placeholders in record values
@@ -108,6 +109,14 @@ Current IPv6: 2001:db8::1234
 ```bash
 crontab -e
 ```
+
+### Automation Details
+The script features an auto-location mechanism. When executed, it automatically switches to its own directory and processes environment variables in the following order:
+1. System Environment Variables: If variables like CF_API_TOKEN are already defined in your system or shell, the script will use them first.
+2. Automatic .env Loading: The script automatically searches for a .env file in the same directory as the script and loads its configurations.
+
+### Usage Example
+Since the script handles its own pathing, you only need to provide the absolute path to the script in your crontab.
 
 ### Example cron job (every 10 minutes)
 
